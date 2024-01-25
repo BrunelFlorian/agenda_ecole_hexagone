@@ -10,7 +10,7 @@ EXEC=main
 # Dossiers
 INCLUDE_DIR=include
 SRC_DIR=src
-OBJ_DIR=obj
+OBJ_DIR=build
 BIN_DIR=bin
 
 # Liste des fichiers sources séparés par des espaces
@@ -31,7 +31,7 @@ $(BIN_DIR)/$(EXEC): $(OBJETS) Makefile
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CCPP) $(CFLAGS) -c $< -o $@
 
-# Création du dossier obj s'il n'existe pas
+# Création du dossier build s'il n'existe pas
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
