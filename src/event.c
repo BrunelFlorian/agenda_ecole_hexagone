@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include "../include/event.h"
 
 /*
@@ -37,6 +38,9 @@ void printAgenda(event_t *agenda) {
 */
 event_t *addEvent(event_t *agenda, int date, int hour, const char *comment) {
     event_t *newEvent = (event_t *)malloc(sizeof(event_t));
+    event_t *prevEvent = NULL;
+    event_t *currentEvent = agenda;
+
     // Vérification de l'allocation mémoire du nouvel événement
     if (newEvent == NULL) {
         fprintf(stderr, "Erreur d'allocation mémoire\n");
@@ -54,9 +58,6 @@ event_t *addEvent(event_t *agenda, int date, int hour, const char *comment) {
         newEvent->next_elem = agenda;
         return newEvent;
     }
-
-    event_t *prevEvent = NULL;
-    event_t *currentEvent = agenda;
 
     // Parcours de l'agenda jusqu'à trouver l'emplacement où insérer le nouvel événement
     while (currentEvent != NULL && (date > currentEvent->date || (date == currentEvent->date && hour >= currentEvent->hour))) {
@@ -94,7 +95,7 @@ event_t *deleteEvent(event_t *agenda, int date, int hour) {
     event_t *prevEvent = NULL;
     event_t *currentEvent = agenda;
     event_t *temp;
-    int eventFound = 0;  // Flag pour savoir si un événement a été trouvé
+    bool eventFound = false;  // Flag pour savoir si un événement a été trouvé
 
     while (currentEvent != NULL) {
         if (currentEvent->date == date && currentEvent->hour == hour) {
@@ -107,7 +108,7 @@ event_t *deleteEvent(event_t *agenda, int date, int hour) {
             temp = currentEvent;
             currentEvent = currentEvent->next_elem;
             free(temp);
-            eventFound = 1; // Un événement a été trouvé
+            eventFound = true; // Un événement a été trouvé
             printf("\nÉvénement supprimé avec succès.\n");
         } else {
             prevEvent = currentEvent;
@@ -129,19 +130,20 @@ event_t *deleteEvent(event_t *agenda, int date, int hour) {
 */
 void saveAgenda(event_t *agenda, const char *filename) {
     FILE *file = fopen(filename, "w");
+    event_t *currentEvent = agenda;
+
     if (file == NULL) {
         fprintf(stderr, "Erreur lors de l'ouverture du fichier %s\n", filename);
         exit(EXIT_FAILURE);
     }
-
-    event_t *currentEvent = agenda;
+    
     while (currentEvent != NULL) {
         fprintf(file, "%d,%d,\"%s\"\n", currentEvent->date, currentEvent->hour, currentEvent->comment);
         currentEvent = currentEvent->next_elem;
     }
 
     fclose(file);
-    printf("\nAgenda sauvegardé dans le fichier '%s\n'", filename);
+    printf("\nAgenda sauvegardé dans le fichier '%s'\n", filename);
 }
 
 /*
@@ -151,15 +153,16 @@ void saveAgenda(event_t *agenda, const char *filename) {
 */
 event_t *loadAgenda(const char *filename) {
     FILE *file = fopen(filename, "r");
-    if (file == NULL) {
-        fprintf(stderr, "Erreur lors de l'ouverture du fichier %s\n", filename);
-        exit(EXIT_FAILURE);
-    }
-
     event_t *agenda = NULL;
     int date, hour;
     char comment[255];
     char line[255];
+    bool correctFormat = true;
+
+    if (file == NULL) {
+        fprintf(stderr, "Erreur lors de l'ouverture du fichier %s\n", filename);
+        exit(EXIT_FAILURE);
+    }
 
     while (fgets(line, sizeof(line), file) != NULL) {
         // Supprimer le caractère de nouvelle ligne à la fin de la ligne lue
@@ -170,12 +173,17 @@ event_t *loadAgenda(const char *filename) {
             // Ajouter chaque événement à l'agenda
             agenda = addEvent(agenda, date, hour, comment);
         } else {
-            fprintf(stderr, "Erreur de format dans le fichier %s\n", filename);
+            correctFormat = false;
+            fprintf(stderr, "\nErreur de format dans le fichier %s\n", filename);
         }
     }
 
     fclose(file);
-    printf("Agenda chargé depuis le fichier %s\n", filename);
+
+    if (correctFormat) {
+        printf("\nAgenda chargé depuis le fichier %s\n", filename);
+    }
+
     return agenda;
 }
 
@@ -185,6 +193,7 @@ event_t *loadAgenda(const char *filename) {
 */
 void freeAgenda(event_t *agenda) {
     event_t *currentEvent = agenda;
+
     while (currentEvent != NULL) {
         event_t *nextElem = currentEvent->next_elem;
         free(currentEvent);

@@ -30,7 +30,8 @@ void requestComment(char *comment);
 /*
 * Demande à l'utilisateur de choisir un nom de fichier
 * @param char *filename : pointeur vers le nom de fichier choisi par l'utilisateur
+* @param bool load : true si l'utilisateur souhaite charger un fichier, false sinon
 */
-void requestFilename(char *filename);
+void requestFilename(char *filename, bool load);
 
 #endif

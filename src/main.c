@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include "../include/event.h"
 #include "../include/menu.h"
 #include "../include/tools.h"
@@ -60,7 +61,7 @@ int main() {
             case 3:
                 // Sauvegarder l'agenda
                 {
-                    requestFilename(filename);
+                    requestFilename(filename, false);
                     saveAgenda(agenda, filename);
                 }
                 break;
@@ -68,7 +69,7 @@ int main() {
                 // Charger un agenda
                 {
                     do {
-                        requestFilename(filename);
+                        requestFilename(filename, true);
                     } while (!fileExist(filename));
 
                     agenda = loadAgenda(filename);
@@ -76,6 +77,7 @@ int main() {
                 break;
             case 0:
                 // Quitter le programme
+                printf("\nAu revoir !\n");
                 freeAgenda(agenda);
                 break;
             default:

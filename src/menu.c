@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include "../include/menu.h"
 #include "../include/event.h"
 
@@ -71,8 +72,12 @@ void requestComment(char *comment) {
 /*
 * Demande à l'utilisateur de choisir un nom de fichier
 * @param char *filename : pointeur vers le nom de fichier choisi par l'utilisateur
+* @param bool load : true si l'utilisateur souhaite charger un fichier, false sinon
 */
-void requestFilename(char *filename) {
+void requestFilename(char *filename, bool load) {
     printf("\nVeuillez entrer le nom du fichier\n");
+    if (load) {
+        printf("Le format de fichier doit être le suivant -> YYYYmmdd,hhmm,\"comment\"\n\n");
+    }
     scanf("%s", filename);
 }
