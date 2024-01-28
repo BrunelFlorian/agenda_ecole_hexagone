@@ -70,7 +70,7 @@ int main() {
                 {
                     do {
                         requestFilename(filename, true);
-                    } while (!fileExist(filename));
+                    } while (!fileExistAndValid(filename));
 
                     agenda = loadAgenda(filename);
                 }

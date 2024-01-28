@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <ctype.h>
 #include "../include/tools.h"
 
 /*
@@ -69,20 +70,42 @@ bool isValidComment(const char *comment) {
         }
         comment++;
     }
+
     return true;
 }
 
 /*
-* Vérifie si un fichier existe
+* Vérifie si une chaîne contient des caractères spéciaux (utilise la librairie <ctype.h>)
+* @param const char *str : chaîne à vérifier
+* @return bool : true si la chaîne contient des caractères spéciaux, false sinon
+*/
+bool containsSpecialChars(const char *str) {
+    for (int i = 0; str[i] != '\0'; ++i) {
+        if (!isalnum(str[i]) && !isspace(str[i]) && str[i] != '.') {
+            return true;
+        }
+    }
+    return false;
+}
+
+/*
+* Vérifie si un fichier existe et si son nom est valide
 * @param const char *filename : nom du fichier à vérifier
 * @return bool : true si le fichier existe, false sinon
 */
-bool fileExist(const char *filename) {
+bool fileExistAndValid(const char *filename) {
+    if (containsSpecialChars(filename)) {
+        printf("\nLe nom de fichier '%s' contient des caractères spéciaux non autorisés.\n", filename);
+        return false;
+    } 
+
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
         printf("\nLe fichier '%s' n'existe pas\n", filename);
         return false;
     }
+
     fclose(file);
+
     return true;
 }

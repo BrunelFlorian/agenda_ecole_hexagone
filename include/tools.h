@@ -25,10 +25,17 @@ bool isValidHour(int hour);
 bool isValidComment(const char *comment);
 
 /*
+* Vérifie si une chaîne contient des caractères spéciaux (utilise la librairie <ctype.h>)
+* @param const char *str : chaîne à vérifier
+* @return bool : true si la chaîne contient des caractères spéciaux, false sinon
+*/
+bool containsSpecialChars(const char *str);
+
+/*
 * Vérifie si un fichier existe
 * @param const char *filename : nom du fichier à vérifier
 * @return bool : true si le fichier existe, false sinon
 */
-bool fileExist(const char *filename);
+bool fileExistAndValid(const char *filename);
 
 #endif
