@@ -21,7 +21,7 @@ Ce projet est un calendrier en C. Il permet de gérer des événements et des t�
 │   ├── main.o
 │   ├── menu.o
 │   └── tools.o
-├── include/ (fichiers d'en-tête)
+├── include (fichiers d'en-tête)
 │   ├── event.h
 │   ├── menu.h
 │   └── tools.h
